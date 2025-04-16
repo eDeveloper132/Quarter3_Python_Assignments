@@ -1,6 +1,5 @@
 import streamlit as st
 
-# Define conversion factors to meters
 conversion_factors = {
     "meter": 1,
     "kilometer": 1000,
@@ -17,14 +16,11 @@ def convert(value, input_unit, output_unit):
     output_value = value_in_meters / output_factor
     return output_value
 
-# Streamlit app
 st.title("Unit Converter")
 st.write("Convert between different units of length.")
 
-# List of units
 units = list(conversion_factors.keys())
 
-# Create two columns for input and output
 col1, col2 = st.columns(2)
 
 with col1:
@@ -36,7 +32,6 @@ with col2:
     st.subheader("To")
     output_unit = st.selectbox("Select unit", units, key="output_unit")
 
-# Perform conversion and display result
 if value is not None:
     result = convert(value, input_unit, output_unit)
     st.write(f"{value} {input_unit} is equal to {result:.4f} {output_unit}")

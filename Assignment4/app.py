@@ -21,15 +21,12 @@ def save_library(library):
     except Exception as e:
         st.error(f"Error saving library: {e}")
 
-# Streamlit App
 st.title("📚 Personal Library Manager")
 st.write("Manage your book collection with data stored in your browser's local storage.")
 
-# Initialize library in session state
 if 'library' not in st.session_state:
     st.session_state.library = load_library()
 
-# Sidebar for action selection
 action = st.sidebar.selectbox("Choose an action", ["Add a book", "Remove a book", "Search for a book", "Display all books", "Display statistics"])
 
 if action == "Add a book":
@@ -77,7 +74,6 @@ elif action == "Search for a book":
     search_term = st.text_input("Enter the search term")
     if st.button("Search"):
         if search_term:
-            # Initialize matches to avoid Pylint warning
             matches = []
             if search_by == "Title":
                 matches = [book for book in st.session_state.library if search_term.lower() in book["title"].lower()]

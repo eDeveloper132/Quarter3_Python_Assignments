@@ -2,7 +2,6 @@ import streamlit as st
 import hashlib
 from cryptography.fernet import Fernet
 
-# Initialize session state variables
 if 'stored_data' not in st.session_state:
     st.session_state.stored_data = {}
 if 'next_id' not in st.session_state:
@@ -12,22 +11,18 @@ if 'failed_attempts' not in st.session_state:
 if 'locked_out' not in st.session_state:
     st.session_state.locked_out = False
 
-# Generate a Fernet key (in-memory for this session)
 if 'fernet_key' not in st.session_state:
     st.session_state.fernet_key = Fernet.generate_key()
 cipher = Fernet(st.session_state.fernet_key)
 
-# Hash of the master password using the same hash function
 def hash_passkey(passkey):
     return hashlib.sha256(passkey.encode()).hexdigest()
 
 MASTER_PASSWORD_HASH = hash_passkey("admin123")
 
-# Function to encrypt data
 def encrypt_data(text):
     return cipher.encrypt(text.encode()).decode()
 
-# Function to decrypt data with error handling
 def decrypt_data(encrypted_text):
     try:
         return cipher.decrypt(encrypted_text.encode()).decode()
@@ -35,19 +30,15 @@ def decrypt_data(encrypted_text):
         st.error(f"Decryption failed: {e}")
         return None
 
-# Streamlit UI
 st.title("🔒 Secure Data Encryption System")
 
-# Navigation menu
 menu = ["Home", "Store Data", "Retrieve Data", "Delete Data", "Login"]
 
-# Force Login page if locked out, otherwise allow navigation
 if st.session_state.locked_out:
     choice = "Login"
 else:
     choice = st.sidebar.selectbox("Navigation", menu)
 
-# Home Page
 if choice == "Home":
     st.subheader("🏠 Welcome to the Secure Data System")
     st.write("Use this app to **securely store and retrieve data** using unique passkeys.")
@@ -62,7 +53,6 @@ if choice == "Home":
     else:
         st.write("No data stored yet.")
 
-# Store Data Page
 elif choice == "Store Data":
     st.subheader("📂 Store Data Securely")
     st.write("**Note:** Remember your passkey, as it will be required to retrieve the data.")
@@ -85,7 +75,6 @@ elif choice == "Store Data":
         else:
             st.error("⚠️ All fields are required!")
 
-# Retrieve Data Page
 elif choice == "Retrieve Data":
     st.subheader("🔍 Retrieve Your Data")
     st.write("**Instructions:** Select the data you want to retrieve and enter the correct passkey to decrypt it.")
@@ -116,7 +105,6 @@ elif choice == "Retrieve Data":
     else:
         st.write("No data stored yet.")
 
-# Delete Data Page
 elif choice == "Delete Data":
     st.subheader("🗑️ Delete Stored Data")
     if st.session_state.stored_data:
@@ -136,7 +124,6 @@ elif choice == "Delete Data":
     else:
         st.write("No data stored yet.")
 
-# Login Page for Reauthorization
 elif choice == "Login":
     st.subheader("🔑 Reauthorization Required")
     login_pass = st.text_input("Enter Master Password:", type="password")
